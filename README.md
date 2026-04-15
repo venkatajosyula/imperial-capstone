@@ -63,4 +63,17 @@ A parallel SVM-based query generator was introduced alongside the heuristic base
 
 The heuristic remained the submitted query at 12 points per function (too sparse in 4D–8D to trust the SVM boundary over objectively observed maxima), but SVM queries were documented as parallel alternatives. The SVM diverged most strongly for F1 — where the heuristic has produced no usable signal — making it the primary candidate for a strategy switch in Round 4.
 
-**Planned evolution:** As the observation pool grows, the SVM boundary will become more reliable in higher-dimensional functions. The RBF kernel is appropriate for F6–F8, where feature interactions are likely non-additive. Gaussian Process / Bayesian Optimisation is under consideration as a surrogate model for uncertainty-aware query selection in later rounds.
+### Round 4 — Neural Network Surrogate + Gradient-Guided Querying
+Round 4 was upgraded to a Module 15-aligned approach using neural networks, gradient descent ideas, and backpropagation-style sensitivity analysis.
+
+Core process:
+
+- Train one MLP surrogate per function on cumulative data (Week 3 datasets as primary source).
+- Sample 30,000 random candidate points in the valid domain `[0, 1)`.
+- Score each candidate by predicted output plus a distance term to avoid re-submitting old points.
+- Apply gradient-ascent-style refinement (numerical input gradients) from top candidate starts.
+- Select one final query per function, clipped to `[0, 0.999999]` and formatted to six decimals.
+
+Compared with earlier rounds, Round 4 moved from fixed blending and classification-style region selection to a single neural-network surrogate workflow for all functions. The submission remained one query per function, and all generated queries passed schema checks (function-wise dimensions, value bounds in `[0, 1)`, and six-decimal formatting).
+
+**Planned evolution:** Continue the NN surrogate pipeline while increasing robustness as more data arrives: tune architecture/regularization per function, improve gradient-step scheduling, and maintain explicit exploration controls so high-dimensional search does not collapse to narrow local regions.
