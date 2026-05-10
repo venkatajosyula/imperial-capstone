@@ -68,7 +68,7 @@ Round 4 was upgraded to a Module 15-aligned approach using neural networks, grad
 
 Core process:
 
-1. Train one MLP surrogate per function on cumulative data (Week 3 datasets as primary source).
+1. Train one neural network surrogate per function on cumulative data (Week 3 datasets as primary source).
 2. Sample 30,000 random candidate points in the valid domain `[0, 1)`.
 3. Score each candidate by predicted output plus a distance term to avoid re-submitting old points.
 4. Apply gradient-ascent-style refinement (numerical input gradients) from top candidate starts.
@@ -77,3 +77,66 @@ Core process:
 Compared with earlier rounds, Round 4 moved from fixed blending and classification-style region selection to a single neural-network surrogate workflow for all functions. The submission remained one query per function, and all generated queries passed schema checks (function-wise dimensions, value bounds in `[0, 1)`, and six-decimal formatting).
 
 **Planned evolution:** Continue the NN surrogate pipeline while increasing robustness as more data arrives: tune architecture/regularization per function, improve gradient-step scheduling, and maintain explicit exploration controls so high-dimensional search does not collapse to narrow local regions.
+
+### Round 5: Neural Network Surrogate + Hierarchical Feature Awareness
+Round 5 continued the neural network surrogate pipeline from Round 4, now applied to 14 cumulative data points for F1/F2 and proportionally more for higher-dimensional functions (up to 44 for F8). The core process was identical to Round 4 but with two refinements informed by Module 16 concepts:
+
+1. **Hierarchical feature awareness:** The two-hidden-layer architecture was retained to preserve capacity for capturing dimension interactions, not just individual correlations. Gradient analysis confirmed that F5 is primarily driven by dimensions 3 and 4 (magnitudes ~1027 and ~927), which guided query placement.
+2. **Reduced candidate set:** Candidate sampling was reduced from 30,000 to 5,000 and top starts from 30 to 10 to keep runtime practical at this data scale, without materially affecting query quality.
+
+Data lineage for Round 5: `week-3/data/function_X/` cumulative `.npy` files (rounds 1–3, 12 points for 2D functions) were extended with rounds 3 and 4 results parsed from `week-5/inputs.txt` and `week-5/outputs.txt`, then saved to `week-4/data/function_X/` as the Round 5 training source.
+
+**Round 5 submitted queries:**
+
+| Function | Query | Predicted output |
+|----------|-------|-----------------|
+| F1 | `0.999999-0.716687` | 0.00115 |
+| F2 | `0.670109-0.283738` | 0.642 |
+| F3 | `0.999999-0.668856-0.999999` | 0.071 |
+| F4 | `0.553885-0.455830-0.393990-0.235527` | −3.605 |
+| F5 | `0.375803-0.678335-0.999999-0.999999` | 2628 |
+| F6 | `0.584100-0.000000-0.532219-0.673288-0.094311` | −0.514 |
+| F7 | `0.353550-0.351452-0.319921-0.000000-0.324359-0.931710` | 2.887 |
+| F8 | `0.265410-0.000000-0.000000-0.374231-0.968181-0.081225-0.253762-0.840590` | 10.195 |
+
+**Planned evolution:** As data grows beyond ~20 points per function, explore ensemble surrogates or Gaussian process alternatives to improve uncertainty quantification, and consider a per-function exploration budget that adapts based on observed output variance.
+
+### Round 6: Neural Network Surrogate — 15 Data Points
+Round 6 continues the neural network surrogate pipeline, now trained on 15 cumulative data points for F1/F2 and proportionally more for higher-dimensional functions (up to 45 for F8). The strategy and architecture are unchanged from Round 5, reflecting the Module 17 parallel with CNNs: the same depth (two hidden layers, tanh activation) is retained to maintain capacity for dimension interactions without overfitting on the small dataset. Regularisation (L2 weight decay, α=1e-3) provides the same role as dropout in a CNN — reducing reliance on individual inputs and improving generalisation.
+
+Data lineage for Round 6: `week-4/data/function_X/` cumulative `.npy` files (rounds 1–4, 14 points for 2D functions) were extended with the round-5 result parsed from `week-6/inputs.txt` and `week-6/outputs.txt`, then saved to `week-5/data/function_X/` as the Round 6 training source.
+
+**Round 6 submitted queries:**
+
+| Function | Query | Predicted output |
+|----------|-------|-----------------|
+| F1 | `0.000000-0.062404` | 0.000342 |
+| F2 | `0.954448-0.000000` | 0.628 |
+| F3 | `0.591243-0.000000-0.703210` | 0.089 |
+| F4 | `0.577846-0.442866-0.377803-0.239652` | −3.803 |
+| F5 | `0.347755-0.826999-0.999999-0.999999` | 2468 |
+| F6 | `0.627991-0.307931-0.538595-0.855392-0.166437` | −0.545 |
+| F7 | `0.175912-0.292417-0.399772-0.190708-0.383330-0.593055` | 2.670 |
+| F8 | `0.000000-0.092187-0.000000-0.313546-0.351845-0.999999-0.074649-0.367430` | 10.167 |
+
+**Planned evolution:** With 15+ points per function, the surrogate is becoming more reliable for lower-dimensional functions. Next steps: investigate per-function architecture tuning (deeper networks for higher-dimensional functions), and introduce an explicit uncertainty measure to more systematically balance exploration and exploitation.
+
+### Round 7: Neural Network Surrogate — 16 Data Points
+Round 7 extends the neural network surrogate pipeline to 16 cumulative data points for F1/F2 and proportionally more for higher-dimensional functions (46 for F8). The strategy remains identical to Rounds 5 and 6, with no architectural changes. The incremental data addition continues to refine the surrogate on the growing dataset while maintaining the same two-layer tanh network and L2 regularization.
+
+Data lineage for Round 7: `week-5/data/function_X/` cumulative `.npy` files (rounds 1–5, 15 points for 2D functions) were extended with the round-6 result parsed from `week-7/inputs.txt` and `week-7/outputs.txt`, then saved to `week-6/data/function_X/` as the Round 7 training source.
+
+**Round 7 submitted queries:**
+
+| Function | Query | Predicted output |
+|----------|-------|-----------------|
+| F1 | `0.000000-0.997451` | 0.000232 |
+| F2 | `0.632322-0.999999` | 0.624502 |
+| F3 | `0.440601-0.635553-0.618984` | 0.020438 |
+| F4 | `0.552008-0.484773-0.419586-0.254089` | −4.00784 |
+| F5 | `0.388378-0.892873-0.999999-0.999999` | 2885.3 |
+| F6 | `0.596418-0.290466-0.535810-0.999999-0.260912` | −0.4425 |
+| F7 | `0.000000-0.314012-0.431251-0.161961-0.434593-0.698083` | 2.7511 |
+| F8 | `0.000000-0.446318-0.000000-0.000000-0.546491-0.000000-0.595139-0.999999` | 10.176 |
+
+**Planned evolution:** As the dataset approaches 20+ points per function, the neural network surrogate should benefit from more stable cross-validation estimates and clearer landscape inference. Future refinements include adaptive regularization per function based on data variance, and consideration of ensemble methods to better estimate prediction uncertainty for improved exploration guidance.
