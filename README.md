@@ -4,6 +4,11 @@
 
 This project tackles a **Black-Box Optimisation (BBO)** challenge: eight unknown functions (F1–F8) must be maximised without access to their source code, gradients, or analytical form. Each function can only be queried by submitting an input vector and observing the returned scalar. The challenge mirrors a broad class of real-world problems, including hyperparameter tuning, experimental design, and engineering optimisation, where the objective is expensive to evaluate and its structure is entirely unknown.
 
+### Governance Documentation (Module 21)
+
+- Dataset datasheet: [docs/datasheets/bbo_capstone_dataset_datasheet.md](docs/datasheets/bbo_capstone_dataset_datasheet.md)
+- Model card: [docs/model-cards/bbo_optimisation_strategy_model_card.md](docs/model-cards/bbo_optimisation_strategy_model_card.md)
+
 From a career perspective, BBO directly underpins AutoML and model selection workflows. Developing disciplined query strategies under uncertainty, with traceable rationale and reproducible code, is a transferable skill for any data science or MLOps role where evaluation budgets are finite and feedback is delayed.
 
 ---
@@ -140,3 +145,64 @@ Data lineage for Round 7: `week-5/data/function_X/` cumulative `.npy` files (rou
 | F8 | `0.000000-0.446318-0.000000-0.000000-0.546491-0.000000-0.595139-0.999999` | 10.176 |
 
 **Planned evolution:** As the dataset approaches 20+ points per function, the neural network surrogate should benefit from more stable cross-validation estimates and clearer landscape inference. Future refinements include adaptive regularization per function based on data variance, and consideration of ensemble methods to better estimate prediction uncertainty for improved exploration guidance.
+
+### Round 8: Neural Network Surrogate — 17 Data Points
+Round 8 extends the neural network surrogate pipeline to 17 cumulative data points for F1/F2 and proportionally more for higher-dimensional functions (47 for F8). The strategy remains unchanged from Rounds 5–7: two hidden layers with tanh activation, L2 regularisation (alpha=1e-3), candidate exploration over 5,000 random points, and gradient-ascent-style refinement of top starts.
+
+Data lineage for Round 8: `week-6/data/function_X/` cumulative `.npy` files (rounds 1–6, 16 points for 2D functions) were extended with the round-7 result parsed from `week-8/inputs.txt` and `week-8/outputs.txt`, then saved to `week-7/data/function_X/` as the Round 8 training source.
+
+**Round 8 submitted queries:**
+
+| Function | Query | Predicted output |
+|----------|-------|-----------------|
+| F1 | `0.999999-0.773695` | 0.000282 |
+| F2 | `0.650633-0.637990` | 0.686180 |
+| F3 | `0.990819-0.999999-0.000000` | 0.024726 |
+| F4 | `0.577435-0.496284-0.366459-0.204129` | −3.92715 |
+| F5 | `0.439929-0.956670-0.999999-0.999999` | 3354.48 |
+| F6 | `0.651139-0.262567-0.599355-0.798422-0.091835` | −0.542635 |
+| F7 | `0.307563-0.319620-0.265684-0.216323-0.357029-0.533625` | 2.83472 |
+| F8 | `0.130847-0.000000-0.000000-0.350108-0.451876-0.074684-0.555836-0.938167` | 10.1524 |
+
+**Planned evolution:** With 17+ points now available for low-dimensional functions, the next priority is function-specific calibration of exploration weight and regularisation rather than one global setting. As rounds continue, adding uncertainty-aware selection (for example via ensembles) should help reduce over-exploitation in noisy or high-dimensional regions.
+
+### Round 9: Neural Network Surrogate — 18 Data Points
+Round 9 extends the neural network surrogate pipeline to 18 cumulative data points for F1/F2 and proportionally more for higher-dimensional functions (48 for F8). The strategy remains the same as Rounds 5–8: two hidden layers with tanh activation, L2 regularisation (alpha=1e-3), 5,000 random candidates, and gradient-ascent-style refinement of the best starts.
+
+Data lineage for Round 9: `week-7/data/function_X/` cumulative `.npy` files (rounds 1–7, 17 points for 2D functions) were extended with the round-8 result parsed from `week-9/inputs.txt` and `week-9/outputs.txt`, then saved to `week-8/data/function_X/` as the Round 9 training source.
+
+**Round 9 submitted queries:**
+
+| Function | Query | Predicted output |
+|----------|-------|-----------------|
+| F1 | `0.944470-0.000000` | 0.000201 |
+| F2 | `0.999999-0.862726` | 0.685679 |
+| F3 | `0.585362-0.982031-0.423506` | 0.015385 |
+| F4 | `0.512202-0.487812-0.471215-0.362323` | −3.70303 |
+| F5 | `0.570179-0.999999-0.999999-0.999999` | 4051.72 |
+| F6 | `0.633574-0.221343-0.676984-0.853845-0.000000` | −0.476486 |
+| F7 | `0.348781-0.360456-0.389134-0.281641-0.334543-0.598031` | 2.67495 |
+| F8 | `0.000000-0.038573-0.000000-0.000000-0.542498-0.960513-0.612752-0.473576` | 10.033 |
+
+**Planned evolution:** At 18 points, the surrogate is still strongest on the lower-dimensional functions, while the higher-dimensional cases remain more sensitive to search noise and model fit. The next refinement would be function-specific search settings and a more explicit uncertainty signal so the query strategy can balance exploitation and exploration more consistently.
+
+### Round 10: Neural Network Surrogate — 19 Data Points
+Round 10 extends the neural network surrogate pipeline to 19 cumulative data points for F1/F2 and proportionally more for higher-dimensional functions (49 for F8). The strategy remains consistent with Rounds 5-9: two hidden layers with tanh activation, L2 regularisation (alpha=1e-3), 5,000 random candidates, and gradient-ascent-style refinement of the top starts.
+
+Data lineage for Round 10: `week-8/data/function_X/` cumulative `.npy` files (rounds 1-8, 18 points for 2D functions) were extended with the round-9 result parsed from `week-10/inputs.txt` and `week-10/outputs.txt`, then saved to `week-9/data/function_X/` as the Round 10 training source.
+
+**Round 10 submitted queries:**
+
+| Function | Query | Predicted output |
+|----------|-------|-----------------|
+| F1 | `0.999999-0.387219` | 0.000526 |
+| F2 | `0.778580-0.325437` | 0.281417 |
+| F3 | `0.593991-0.466307-0.438282` | -0.003492 |
+| F4 | `0.468386-0.475520-0.442150-0.459084` | -2.65078 |
+| F5 | `0.758271-0.999999-0.999999-0.999999` | 4890.55 |
+| F6 | `0.629244-0.246822-0.625220-0.818379-0.040015` | -0.497866 |
+| F7 | `0.281416-0.288326-0.368833-0.178561-0.459782-0.585532` | 2.61727 |
+| F8 | `0.004538-0.285212-0.000000-0.344580-0.255946-0.954305-0.000000-0.995167` | 10.1869 |
+
+**Planned evolution:** With 19 points available for low-dimensional functions, incremental gains are becoming more function-specific. The next step is to adapt exploration weight and regularisation per function and add a lightweight uncertainty signal so query selection stays robust when model confidence and generalisation quality diverge.
+
