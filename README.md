@@ -206,3 +206,44 @@ Data lineage for Round 10: `week-8/data/function_X/` cumulative `.npy` files (ro
 
 **Planned evolution:** With 19 points available for low-dimensional functions, incremental gains are becoming more function-specific. The next step is to adapt exploration weight and regularisation per function and add a lightweight uncertainty signal so query selection stays robust when model confidence and generalisation quality diverge.
 
+### Round 11: Cluster-Aware Neural Surrogate — 20 Data Points
+Round 11 extends the optimisation pipeline to 20 cumulative data points for F1/F2 and proportionally more for higher-dimensional functions (50 for F8). The strategy remains neural-surrogate-guided, but now includes a clustering lens to identify local groups and use centroid-distance cues in query scoring.
+
+Data lineage for Round 11: `week-9/data/function_X/` cumulative `.npy` files (rounds 1-9, 19 points for 2D functions) were extended with the round-10 result parsed from `week-11/inputs.txt` and `week-11/outputs.txt`, then saved to `week-10/data/function_X/` as the Round 11 training source.
+
+**Round 11 submitted queries:**
+
+| Function | Query | Predicted output |
+|----------|-------|-----------------|
+| F1 | `0.999999-0.436755` | 0.000202 |
+| F2 | `0.772318-0.750760` | 0.519329 |
+| F3 | `0.693560-0.417123-0.405668` | 0.008725 |
+| F4 | `0.440312-0.475570-0.443247-0.487267` | -2.16175 |
+| F5 | `0.999999-0.999999-0.999999-0.999999` | 5767.3 |
+| F6 | `0.594263-0.257321-0.640626-0.831718-0.000000` | -0.441893 |
+| F7 | `0.249603-0.337927-0.252680-0.270248-0.269419-0.636759` | 2.65593 |
+| F8 | `0.455746-0.229401-0.000000-0.492928-0.998826-0.541156-0.000000-0.799043` | 10.0458 |
+
+**Planned evolution:** For the remaining rounds, the immediate priority is to keep the cluster-aware cue but calibrate cluster influence per function so it improves exploration without overpowering strong surrogate evidence in stable regions.
+
+### Round 12: Structure-Guided Neural Surrogate — 21 Data Points
+Round 12 extends the optimisation pipeline to 21 cumulative data points for F1/F2 and proportionally more for higher-dimensional functions (51 for F8). The strategy remains neural-surrogate-guided with a structure lens: local clustering identifies recurring neighborhoods while distance-aware exploration keeps query diversity and reduces purely random search behavior.
+
+Data lineage for Round 12: `week-10/data/function_X/` cumulative `.npy` files (rounds 1-10, 20 points for 2D functions) were extended with the round-11 result parsed from `week-12/inputs.txt` and `week-12/outputs.txt`, then saved to `week-11/data/function_X/` as the Round 12 training source.
+
+**Round 12 submitted queries:**
+
+| Function | Query | Predicted output |
+|----------|-------|-----------------|
+| F1 | `0.000000-0.747322` | 0.000211 |
+| F2 | `0.705314-0.999999` | 0.706924 |
+| F3 | `0.695062-0.437039-0.450905` | -0.001078 |
+| F4 | `0.466176-0.491093-0.411038-0.539096` | -1.86567 |
+| F5 | `0.999999-0.952851-0.999999-0.999999` | 8160.43 |
+| F6 | `0.592303-0.276171-0.621112-0.809378-0.000000` | -0.425269 |
+| F7 | `0.279662-0.356970-0.187530-0.271518-0.160674-0.688656` | 2.69876 |
+| F8 | `0.000000-0.351347-0.000000-0.228764-0.532499-0.675930-0.505428-0.878947` | 9.93275 |
+
+**Planned evolution:** For Week 13, the next refinement is to tune structure weights per function so stable low-dimensional functions can exploit confidently while higher-dimensional functions preserve broader exploration around multiple promising regions.
+
+
