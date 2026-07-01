@@ -10,15 +10,15 @@ This project studies how to make good decisions when the true formula is unknown
 
 ### Quick Navigation
 
-- Final method walkthrough notebook: `notebooks/bbo_final_method_and_results.ipynb`
-- Dataset datasheet: `docs/datasheets/bbo_capstone_dataset_datasheet.md`
-- Model card: `docs/model-cards/bbo_optimisation_strategy_model_card.md`
-- Presentation material: `docs/presentation/BBO capstone project presentation.pdf`
-- Weekly round folders and source files: `week-1/` to `week-13/`
-- Weekly execution helper: `scripts/run_week_pipeline.sh`
-- Dependency + execution wrapper: `scripts/setup_and_run_week.sh`
+- Final method walkthrough notebook: `src/bbo/notebooks/bbo_final_method_and_results.ipynb`
+- Dataset datasheet: `src/bbo/docs/datasheets/bbo_capstone_dataset_datasheet.md`
+- Model card: `src/bbo/docs/model-cards/bbo_optimisation_strategy_model_card.md`
+- Presentation material: `src/bbo/docs/presentation/BBO capstone project presentation.pdf`
+- Weekly round folders and source files: `src/bbo/week-1/` to `src/bbo/week-13/`
+- Weekly execution helper: `src/bbo/scripts/run_week_pipeline.sh`
+- Dependency + execution wrapper: `src/bbo/scripts/setup_and_run_week.sh`
 
-Canonical submission files are stored at each week root using `submission_roundN.txt` (for example, `week-4/submission_round4.txt`).
+Canonical submission files are stored at each week root using `submission_roundN.txt` (for example, `src/bbo/week-4/submission_round4.txt`).
 
 ## Section 1: Project Overview
 
@@ -104,7 +104,7 @@ Round 5 continued the neural network surrogate pipeline from Round 4, now applie
 1. **Hierarchical feature awareness:** The two-hidden-layer architecture was retained to preserve capacity for capturing dimension interactions, not just individual correlations. Gradient analysis confirmed that F5 is primarily driven by dimensions 3 and 4 (magnitudes ~1027 and ~927), which guided query placement.
 2. **Reduced candidate set:** Candidate sampling was reduced from 30,000 to 5,000 and top starts from 30 to 10 to keep runtime practical at this data scale, without materially affecting query quality.
 
-Data lineage for Round 5: `week-3/data/function_X/` cumulative `.npy` files (rounds 1–3, 12 points for 2D functions) were extended with rounds 3 and 4 results parsed from `week-5/inputs.txt` and `week-5/outputs.txt`, then saved to `week-4/data/function_X/` as the Round 5 training source.
+Data lineage for Round 5: `src/bbo/week-3/data/function_X/` cumulative `.npy` files (rounds 1–3, 12 points for 2D functions) were extended with rounds 3 and 4 results parsed from `src/bbo/week-5/inputs.txt` and `src/bbo/week-5/outputs.txt`, then saved to `src/bbo/week-4/data/function_X/` as the Round 5 training source.
 
 **Round 5 submitted queries:**
 
@@ -124,7 +124,7 @@ Data lineage for Round 5: `week-3/data/function_X/` cumulative `.npy` files (rou
 ### Round 6: Neural Network Surrogate — 15 Data Points
 Round 6 continues the neural network surrogate pipeline, now trained on 15 cumulative data points for F1/F2 and proportionally more for higher-dimensional functions (up to 45 for F8). The strategy and architecture are unchanged from Round 5, reflecting the Module 17 parallel with CNNs: the same depth (two hidden layers, tanh activation) is retained to maintain capacity for dimension interactions without overfitting on the small dataset. Regularisation (L2 weight decay, α=1e-3) provides the same role as dropout in a CNN — reducing reliance on individual inputs and improving generalisation.
 
-Data lineage for Round 6: `week-4/data/function_X/` cumulative `.npy` files (rounds 1–4, 14 points for 2D functions) were extended with the round-5 result parsed from `week-6/inputs.txt` and `week-6/outputs.txt`, then saved to `week-5/data/function_X/` as the Round 6 training source.
+Data lineage for Round 6: `src/bbo/week-4/data/function_X/` cumulative `.npy` files (rounds 1–4, 14 points for 2D functions) were extended with the round-5 result parsed from `src/bbo/week-6/inputs.txt` and `src/bbo/week-6/outputs.txt`, then saved to `src/bbo/week-5/data/function_X/` as the Round 6 training source.
 
 **Round 6 submitted queries:**
 
@@ -144,7 +144,7 @@ Data lineage for Round 6: `week-4/data/function_X/` cumulative `.npy` files (rou
 ### Round 7: Neural Network Surrogate — 16 Data Points
 Round 7 extends the neural network surrogate pipeline to 16 cumulative data points for F1/F2 and proportionally more for higher-dimensional functions (46 for F8). The strategy remains identical to Rounds 5 and 6, with no architectural changes. The incremental data addition continues to refine the surrogate on the growing dataset while maintaining the same two-layer tanh network and L2 regularization.
 
-Data lineage for Round 7: `week-5/data/function_X/` cumulative `.npy` files (rounds 1–5, 15 points for 2D functions) were extended with the round-6 result parsed from `week-7/inputs.txt` and `week-7/outputs.txt`, then saved to `week-6/data/function_X/` as the Round 7 training source.
+Data lineage for Round 7: `src/bbo/week-5/data/function_X/` cumulative `.npy` files (rounds 1–5, 15 points for 2D functions) were extended with the round-6 result parsed from `src/bbo/week-7/inputs.txt` and `src/bbo/week-7/outputs.txt`, then saved to `src/bbo/week-6/data/function_X/` as the Round 7 training source.
 
 **Round 7 submitted queries:**
 
@@ -164,7 +164,7 @@ Data lineage for Round 7: `week-5/data/function_X/` cumulative `.npy` files (rou
 ### Round 8: Neural Network Surrogate — 17 Data Points
 Round 8 extends the neural network surrogate pipeline to 17 cumulative data points for F1/F2 and proportionally more for higher-dimensional functions (47 for F8). The strategy remains unchanged from Rounds 5–7: two hidden layers with tanh activation, L2 regularisation (alpha=1e-3), candidate exploration over 5,000 random points, and gradient-ascent-style refinement of top starts.
 
-Data lineage for Round 8: `week-6/data/function_X/` cumulative `.npy` files (rounds 1–6, 16 points for 2D functions) were extended with the round-7 result parsed from `week-8/inputs.txt` and `week-8/outputs.txt`, then saved to `week-7/data/function_X/` as the Round 8 training source.
+Data lineage for Round 8: `src/bbo/week-6/data/function_X/` cumulative `.npy` files (rounds 1–6, 16 points for 2D functions) were extended with the round-7 result parsed from `src/bbo/week-8/inputs.txt` and `src/bbo/week-8/outputs.txt`, then saved to `src/bbo/week-7/data/function_X/` as the Round 8 training source.
 
 **Round 8 submitted queries:**
 
@@ -184,7 +184,7 @@ Data lineage for Round 8: `week-6/data/function_X/` cumulative `.npy` files (rou
 ### Round 9: Neural Network Surrogate — 18 Data Points
 Round 9 extends the neural network surrogate pipeline to 18 cumulative data points for F1/F2 and proportionally more for higher-dimensional functions (48 for F8). The strategy remains the same as Rounds 5–8: two hidden layers with tanh activation, L2 regularisation (alpha=1e-3), 5,000 random candidates, and gradient-ascent-style refinement of the best starts.
 
-Data lineage for Round 9: `week-7/data/function_X/` cumulative `.npy` files (rounds 1–7, 17 points for 2D functions) were extended with the round-8 result parsed from `week-9/inputs.txt` and `week-9/outputs.txt`, then saved to `week-8/data/function_X/` as the Round 9 training source.
+Data lineage for Round 9: `src/bbo/week-7/data/function_X/` cumulative `.npy` files (rounds 1–7, 17 points for 2D functions) were extended with the round-8 result parsed from `src/bbo/week-9/inputs.txt` and `src/bbo/week-9/outputs.txt`, then saved to `src/bbo/week-8/data/function_X/` as the Round 9 training source.
 
 **Round 9 submitted queries:**
 
@@ -204,7 +204,7 @@ Data lineage for Round 9: `week-7/data/function_X/` cumulative `.npy` files (rou
 ### Round 10: Neural Network Surrogate — 19 Data Points
 Round 10 extends the neural network surrogate pipeline to 19 cumulative data points for F1/F2 and proportionally more for higher-dimensional functions (49 for F8). The strategy remains consistent with Rounds 5-9: two hidden layers with tanh activation, L2 regularisation (alpha=1e-3), 5,000 random candidates, and gradient-ascent-style refinement of the top starts.
 
-Data lineage for Round 10: `week-8/data/function_X/` cumulative `.npy` files (rounds 1-8, 18 points for 2D functions) were extended with the round-9 result parsed from `week-10/inputs.txt` and `week-10/outputs.txt`, then saved to `week-9/data/function_X/` as the Round 10 training source.
+Data lineage for Round 10: `src/bbo/week-8/data/function_X/` cumulative `.npy` files (rounds 1-8, 18 points for 2D functions) were extended with the round-9 result parsed from `src/bbo/week-10/inputs.txt` and `src/bbo/week-10/outputs.txt`, then saved to `src/bbo/week-9/data/function_X/` as the Round 10 training source.
 
 **Round 10 submitted queries:**
 
@@ -224,7 +224,7 @@ Data lineage for Round 10: `week-8/data/function_X/` cumulative `.npy` files (ro
 ### Round 11: Cluster-Aware Neural Surrogate — 20 Data Points
 Round 11 extends the optimisation pipeline to 20 cumulative data points for F1/F2 and proportionally more for higher-dimensional functions (50 for F8). The strategy remains neural-surrogate-guided, but now includes a clustering lens to identify local groups and use centroid-distance cues in query scoring.
 
-Data lineage for Round 11: `week-9/data/function_X/` cumulative `.npy` files (rounds 1-9, 19 points for 2D functions) were extended with the round-10 result parsed from `week-11/inputs.txt` and `week-11/outputs.txt`, then saved to `week-10/data/function_X/` as the Round 11 training source.
+Data lineage for Round 11: `src/bbo/week-9/data/function_X/` cumulative `.npy` files (rounds 1-9, 19 points for 2D functions) were extended with the round-10 result parsed from `src/bbo/week-11/inputs.txt` and `src/bbo/week-11/outputs.txt`, then saved to `src/bbo/week-10/data/function_X/` as the Round 11 training source.
 
 **Round 11 submitted queries:**
 
@@ -244,7 +244,7 @@ Data lineage for Round 11: `week-9/data/function_X/` cumulative `.npy` files (ro
 ### Round 12: Structure-Guided Neural Surrogate — 21 Data Points
 Round 12 extends the optimisation pipeline to 21 cumulative data points for F1/F2 and proportionally more for higher-dimensional functions (51 for F8). The strategy remains neural-surrogate-guided with a structure lens: local clustering identifies recurring neighborhoods while distance-aware exploration keeps query diversity and reduces purely random search behavior.
 
-Data lineage for Round 12: `week-10/data/function_X/` cumulative `.npy` files (rounds 1-10, 20 points for 2D functions) were extended with the round-11 result parsed from `week-12/inputs.txt` and `week-12/outputs.txt`, then saved to `week-11/data/function_X/` as the Round 12 training source.
+Data lineage for Round 12: `src/bbo/week-10/data/function_X/` cumulative `.npy` files (rounds 1-10, 20 points for 2D functions) were extended with the round-11 result parsed from `src/bbo/week-12/inputs.txt` and `src/bbo/week-12/outputs.txt`, then saved to `src/bbo/week-11/data/function_X/` as the Round 12 training source.
 
 **Round 12 submitted queries:**
 
@@ -264,7 +264,7 @@ Data lineage for Round 12: `week-10/data/function_X/` cumulative `.npy` files (r
 ### Round 13: Final Structure-Guided Neural Surrogate — 23 Data Points
 Round 13 is the final capstone round. The optimisation pipeline now uses 23 cumulative data points for F1/F2 and proportionally more for higher-dimensional functions (53 for F8). The strategy remains structure-guided and neural-surrogate-driven, with the final round continuing to blend surrogate prediction, exploration distance, and local cluster trend so the search remains evidence-based rather than random.
 
-Data lineage for Round 13: `week-11/data/function_X/` cumulative `.npy` files (rounds 1-11, 21 points for 2D functions) were extended with the round-12 result parsed from `week-13/inputs.txt` and `week-13/outputs.txt`, then saved to `week-12/data/function_X/` as the Round 13 training source.
+Data lineage for Round 13: `src/bbo/week-11/data/function_X/` cumulative `.npy` files (rounds 1-11, 21 points for 2D functions) were extended with the round-12 result parsed from `src/bbo/week-13/inputs.txt` and `src/bbo/week-13/outputs.txt`, then saved to `src/bbo/week-12/data/function_X/` as the Round 13 training source.
 
 **Round 13 submitted queries:**
 
@@ -302,12 +302,12 @@ Full pinned dependencies are listed in `requirements.txt`.
 
 ### Repository Structure (Practical View)
 
-- `notebooks/`: notebook-based method and result presentation
-- `docs/datasheets/`: final datasheet documentation
-- `docs/model-cards/`: final model card documentation
-- `docs/presentation/`: presentation materials
-- `week-1/` ... `week-13/`: weekly data, scripts, and outputs
-- `scripts/`: helper scripts for weekly execution
+- `src/bbo/notebooks/`: notebook-based method and result presentation
+- `src/bbo/docs/datasheets/`: final datasheet documentation
+- `src/bbo/docs/model-cards/`: final model card documentation
+- `src/bbo/docs/presentation/`: presentation materials
+- `src/bbo/week-1/` ... `src/bbo/week-13/`: weekly data, scripts, and outputs
+- `src/bbo/scripts/`: helper scripts for weekly execution
 
 ### Data Hosting Note
 
@@ -318,7 +318,7 @@ The capstone data used here is lightweight and included for reproducibility. If 
 From the repository root, run a weekly pipeline with:
 
 ```bash
-bash scripts/run_week_pipeline.sh 13
+bash src/bbo/scripts/run_week_pipeline.sh 13
 ```
 
 The helper runs available week scripts in sequence (data preparation, query generation, and submission writer where present).
@@ -326,7 +326,7 @@ The helper runs available week scripts in sequence (data preparation, query gene
 If you want dependency installation and execution in one command:
 
 ```bash
-bash scripts/setup_and_run_week.sh 13
+bash src/bbo/scripts/setup_and_run_week.sh 13
 ```
 
 By default this creates/uses `.venv` and installs `requirements.txt` into that environment.
@@ -334,13 +334,13 @@ By default this creates/uses `.venv` and installs `requirements.txt` into that e
 To skip installation (for an already prepared environment):
 
 ```bash
-bash scripts/setup_and_run_week.sh 13 --skip-install
+bash src/bbo/scripts/setup_and_run_week.sh 13 --skip-install
 ```
 
 To use a different base Python or virtual environment path:
 
 ```bash
-bash scripts/setup_and_run_week.sh 13 --python python3 --venv-dir .venv-capstone
+bash src/bbo/scripts/setup_and_run_week.sh 13 --python python3 --venv-dir .venv-capstone
 ```
 
 
