@@ -1,13 +1,28 @@
 # Black-Box Optimisation (BBO) Capstone
 
+## Final Submission Snapshot
+
+This repository is the final deliverable for the BBO capstone project. It is organised to make the full project story easy to follow: weekly data and code evolution, technical governance documents, and a concise explanation for non-technical readers.
+
+### Non-Technical Project Summary
+
+This project studies how to make good decisions when the true formula is unknown. I worked with eight hidden functions and could submit only one new input per function each week. I started with simple rules, then moved to a model-guided strategy that learned from previous outcomes and balanced trying strong regions with exploring new ones. Over 13 rounds, the process became more stable and better documented. The final result is not just a set of scores, but a reproducible optimisation workflow that explains what was tried, why strategy changed, and how decisions were made under limited feedback.
+
+### Quick Navigation
+
+- Final method walkthrough notebook: `notebooks/bbo_final_method_and_results.ipynb`
+- Dataset datasheet: `docs/datasheets/bbo_capstone_dataset_datasheet.md`
+- Model card: `docs/model-cards/bbo_optimisation_strategy_model_card.md`
+- Presentation material: `docs/presentation/BBO capstone project presentation.pdf`
+- Weekly round folders and source files: `week-1/` to `week-13/`
+- Weekly execution helper: `scripts/run_week_pipeline.sh`
+- Dependency + execution wrapper: `scripts/setup_and_run_week.sh`
+
+Canonical submission files are stored at each week root using `submission_roundN.txt` (for example, `week-4/submission_round4.txt`).
+
 ## Section 1: Project Overview
 
 This project tackles a **Black-Box Optimisation (BBO)** challenge: eight unknown functions (F1–F8) must be maximised without access to their source code, gradients, or analytical form. Each function can only be queried by submitting an input vector and observing the returned scalar. The challenge mirrors a broad class of real-world problems, including hyperparameter tuning, experimental design, and engineering optimisation, where the objective is expensive to evaluate and its structure is entirely unknown.
-
-### Governance Documentation (Module 21)
-
-- Dataset datasheet: [docs/datasheets/bbo_capstone_dataset_datasheet.md](docs/datasheets/bbo_capstone_dataset_datasheet.md)
-- Model card: [docs/model-cards/bbo_optimisation_strategy_model_card.md](docs/model-cards/bbo_optimisation_strategy_model_card.md)
 
 From a career perspective, BBO directly underpins AutoML and model selection workflows. Developing disciplined query strategies under uncertainty, with traceable rationale and reproducible code, is a transferable skill for any data science or MLOps role where evaluation budgets are finite and feedback is delayed.
 
@@ -245,5 +260,87 @@ Data lineage for Round 12: `week-10/data/function_X/` cumulative `.npy` files (r
 | F8 | `0.000000-0.351347-0.000000-0.228764-0.532499-0.675930-0.505428-0.878947` | 9.93275 |
 
 **Planned evolution:** For Week 13, the next refinement is to tune structure weights per function so stable low-dimensional functions can exploit confidently while higher-dimensional functions preserve broader exploration around multiple promising regions.
+
+### Round 13: Final Structure-Guided Neural Surrogate — 23 Data Points
+Round 13 is the final capstone round. The optimisation pipeline now uses 23 cumulative data points for F1/F2 and proportionally more for higher-dimensional functions (53 for F8). The strategy remains structure-guided and neural-surrogate-driven, with the final round continuing to blend surrogate prediction, exploration distance, and local cluster trend so the search remains evidence-based rather than random.
+
+Data lineage for Round 13: `week-11/data/function_X/` cumulative `.npy` files (rounds 1-11, 21 points for 2D functions) were extended with the round-12 result parsed from `week-13/inputs.txt` and `week-13/outputs.txt`, then saved to `week-12/data/function_X/` as the Round 13 training source.
+
+**Round 13 submitted queries:**
+
+| Function | Query | Predicted output |
+|----------|-------|-----------------|
+| F1 | `0.000000-0.827480` | 0.000265 |
+| F2 | `0.560223-0.000000` | 0.578863 |
+| F3 | `0.675707-0.367951-0.506820` | 0.001676 |
+| F4 | `0.478976-0.478578-0.406444-0.504528` | -2.71232 |
+| F5 | `0.997551-0.974901-0.265941-0.251726` | 841.363 |
+| F6 | `0.596551-0.292723-0.586020-0.799393-0.000000` | -0.416353 |
+| F7 | `0.000000-0.345100-0.018093-0.583534-0.173206-0.477524` | 2.70356 |
+| F8 | `0.766286-0.000000-0.000000-0.000000-0.000000-0.915846-0.039181-0.502782` | 9.94464 |
+
+**Final note:** This round is the endpoint of the planned 13-round challenge, so the main focus is to preserve the strongest recurring structure while keeping the final queries diverse enough to avoid simple repetition of earlier local choices.
+
+---
+
+## Appendix: Implementation and Reproducibility
+
+### Python Libraries Used
+
+Core optimisation libraries:
+- `numpy`
+- `scikit-learn`
+- `pandas`
+
+Notebook and visualisation support:
+- `matplotlib`
+- `seaborn`
+- `plotly`
+- `jupyter`
+
+Full pinned dependencies are listed in `requirements.txt`.
+
+### Repository Structure (Practical View)
+
+- `notebooks/`: notebook-based method and result presentation
+- `docs/datasheets/`: final datasheet documentation
+- `docs/model-cards/`: final model card documentation
+- `docs/presentation/`: presentation materials
+- `week-1/` ... `week-13/`: weekly data, scripts, and outputs
+- `scripts/`: helper scripts for weekly execution
+
+### Data Hosting Note
+
+The capstone data used here is lightweight and included for reproducibility. If larger datasets are added in future, they will be documented in this README and linked from external storage rather than uploaded directly to GitHub.
+
+### Scripted Execution
+
+From the repository root, run a weekly pipeline with:
+
+```bash
+bash scripts/run_week_pipeline.sh 13
+```
+
+The helper runs available week scripts in sequence (data preparation, query generation, and submission writer where present).
+
+If you want dependency installation and execution in one command:
+
+```bash
+bash scripts/setup_and_run_week.sh 13
+```
+
+By default this creates/uses `.venv` and installs `requirements.txt` into that environment.
+
+To skip installation (for an already prepared environment):
+
+```bash
+bash scripts/setup_and_run_week.sh 13 --skip-install
+```
+
+To use a different base Python or virtual environment path:
+
+```bash
+bash scripts/setup_and_run_week.sh 13 --python python3 --venv-dir .venv-capstone
+```
 
 

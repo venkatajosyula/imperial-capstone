@@ -1,87 +1,82 @@
-# BBO Capstone Dataset Datasheet
+# BBO Capstone Dataset Datasheet (Final Submission)
 
-## Motivation: why did you create this data set? What tasks does it support?
+## Motivation
 
-I created this data set to support my Black-Box Optimisation capstone workflow. The goal is to choose better queries each week for eight unknown objective functions.
+This dataset supports the Black-Box Optimisation (BBO) capstone project, where the goal is to maximise eight unknown objective functions under strict query limits. The dataset exists to support sequential decision-making, surrogate modeling, and transparent reflection on exploration versus exploitation trade-offs.
 
-The data set supports sequential optimisation under a strict budget of one query per function per round. I use it to train surrogate models and to compare exploration and exploitation choices over time.
+## Composition
 
-## Composition: what does it contain? What is the size and format and are there any gaps?
-
-The data set contains function-wise query histories and returned objective values.
+The dataset contains function-wise query histories and returned objective values.
 
 - Functions: F1 to F8
-- Input dimensions:
-  - F1, F2: 2
-  - F3: 3
-  - F4, F5: 4
-  - F6: 5
-  - F7: 6
-  - F8: 8
-- Current cumulative size after Round 10:
-  - F1: 19 rows
-  - F2: 19 rows
-  - F3: 24 rows
-  - F4: 39 rows
-  - F5: 29 rows
-  - F6: 29 rows
-  - F7: 39 rows
-  - F8: 49 rows
+- Input dimensionality:
+  - F1, F2: 2D
+  - F3: 3D
+  - F4, F5: 4D
+  - F6: 5D
+  - F7: 6D
+  - F8: 8D
 
 Format:
-- Raw weekly files: `inputs.txt`, `outputs.txt`
-- Processed files: NumPy arrays
+- Raw weekly records: `inputs.txt`, `outputs.txt`
+- Processed cumulative arrays:
   - `inputs.npy` with shape `(n_samples, d)`
   - `outputs.npy` with shape `(n_samples,)`
 
-Gaps:
-The data set is complete for observed rounds but sparse relative to the full search space, especially for high-dimensional functions. This means many regions are still unexplored.
+Coverage note:
+- The dataset is complete for observed rounds but sparse relative to the full search space, especially in higher-dimensional functions.
 
-## Collection process: how were the queries generated? What strategy did you use? Over what time frame?
+## Collection Process
 
-Queries were generated once per week and submitted through the capstone portal. Returned outputs were copied into weekly files and appended into cumulative arrays.
+Data was collected over 13 weekly rounds.
 
-Strategy by period:
-- Rounds 1 to 2: weighted blend heuristics
-- Round 3: heuristic plus SVM experimentation
-- Rounds 4 to 10: neural network surrogate with candidate sampling and gradient-style refinement
+- One query per function was submitted each round.
+- Returned outputs were appended to cumulative arrays.
+- Validation checks were applied for dimensions, bounds, and formatting.
 
-Time frame:
-The full capstone horizon is 13 weekly rounds. This datasheet is a Week 10 snapshot and currently documents collected data through Round 10.
+Strategy evolution across rounds:
+- Rounds 1-2: weighted heuristic blend
+- Round 3: heuristic with parallel SVM experimentation
+- Rounds 4-13: neural surrogate-guided optimisation with structured exploration
 
-## Preprocessing and uses: have you applied any transformations? What are the intended and inappropriate uses?
+## Preprocessing and Intended Use
 
 Applied transformations:
-- Parsed portal text into numeric arrays
-- Joined wrapped lines where needed
-- Extracted scalar outputs from portal format
+- Parsed portal input/output text into numeric arrays
 - Appended only the newest row each round
-- Validated dimension count, six-decimal schema, and [0, 0.999999] bounds
+- Verified schema and bounds (`[0, 0.999999]`)
+- Used scaling for surrogate model stability
 
 Intended uses:
-- Train and update surrogate models
-- Generate next-round candidate queries
-- Provide reproducible optimisation trace and diagnostics
+- Training and updating surrogate models
+- Reproducible optimisation workflow analysis
+- Strategy comparison and reflection
 
-Inappropriate uses:
-- Safety-critical decisions
+Uses to avoid:
+- Safety-critical deployment decisions
 - Claims of guaranteed global optimum
-- Unvalidated transfer to unrelated optimisation problems
+- Transfer to unrelated tasks without validation
 
-## Distribution and maintenance: where is the data set available? What are the terms of use? Who maintains it?
+## Distribution and Maintenance
 
-Availability:
-The data set is in this repository under weekly folders.
-- Raw weekly records: `week-N/inputs.txt`, `week-N/outputs.txt`
-- Processed cumulative arrays: `week-N/data/function_X/inputs.npy`, `outputs.npy`
-
-Terms of use:
-This is an academic capstone data set for learning, reproducibility, and peer review. External reuse should include attribution and clear caveats about sparse coverage and uncertainty.
+Location in repository:
+- Raw records: `week-N/inputs.txt`, `week-N/outputs.txt`
+- Processed arrays: `week-N/data/function_X/inputs.npy`, `outputs.npy`
 
 Maintenance:
-- Maintained by: repository owner
-- Update schedule: once per weekly challenge round
+- Maintained by repository owner
+- Updated each capstone round
 
-## Reflection: how did writing this datasheet affect how you describe your data, decisions, and assumptions?
+Terms:
+- Academic and portfolio use with attribution
+- Reuse should include caveats about sparse coverage and uncertainty
 
-Writing this datasheet made my assumptions more explicit. The main assumption is that local surrogate patterns from sparse observations are useful for choosing future queries. I now describe this as a practical but limited assumption, especially in high-dimensional functions. The datasheet also improved clarity in how I explain data lineage, preprocessing steps, and responsible use boundaries.
+## Biases, Limitations, and Risks
+
+- High-dimensional functions remain under-sampled.
+- Sampling decisions can reinforce early assumptions if exploration is weak.
+- Surrogate confidence may not equal true confidence without calibrated uncertainty.
+
+## Reflection
+
+Writing this datasheet improved traceability by making assumptions explicit: local structure can guide useful decisions, but uncertainty remains substantial in sparse regions. It also helped distinguish what this dataset supports (learning and reproducibility) from what it does not support (high-stakes automation without further validation).

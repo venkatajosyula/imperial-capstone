@@ -1,0 +1,21 @@
+# Week 10 Reflection
+
+What reasoning guided your submission for this tenth round? Explain your strategy. How did patterns from the previous rounds influence your decisions for each function?
+
+My strategy stayed consistent with recent rounds: train a neural network surrogate per function, score a large random candidate set, then refine top candidates with gradient based updates before choosing one final query. Patterns from earlier rounds influenced this directly. For lower-dimensional functions, the surface looked more stable, so I trusted exploitation slightly more when predicted improvements were clear. For higher-dimensional functions, prior rounds showed larger variance and weaker generalisation, so I weighted diversity and distance from already sampled points more carefully. In practice, this means each function still uses one pipeline, but my confidence in the model output is function-specific.
+
+How transparent is your decision-making process? If another researcher reviewed your notes and data, could they follow your logic and reproduce your strategy? What information would they need to fully understand your approach?
+
+I think the process is reasonably transparent and reproducible. The scripts define the same seed, candidate count, optimisation steps, and formatting constraints each week. Data lineage is also explicit: cumulative arrays are carried forward and only the newest row is appended from the latest portal inputs and outputs. Another researcher could reproduce most of my workflow from the scripts, submission file, diagnostics, and README round summaries. To fully understand the approach, they would need the assumptions behind scoring, especially why I combine predicted value with a distance-based exploration term and why I keep fixed architecture choices instead of retuning everything each week.
+
+What assumptions are you making in your search/optimisation strategy? Identify at least one key assumption related to the functions or the optimisation process. How might this assumption shape or limit your results?
+
+One key assumption is local smoothness: I assume the objective behaves smoothly enough that numerical gradients from the surrogate indicate useful directions for refinement. This helps when the function has consistent local structure, but it can fail if the true landscape has sharp transitions, deceptive plateaus, or noisy behavior not captured by the model. I also assume that 5000 random candidates are enough to place top starts in promising regions. If that coverage is too sparse in higher dimensions, I may miss strong basins and overcommit to locally good but globally weak regions.
+
+Where do you see gaps or potential biases in your data set? Consider the distribution of your queries, unexplored areas or patterns in how you sampled the search space.
+
+The main gap is uneven coverage in high-dimensional spaces. Even with cumulative rounds, sampled points are still sparse relative to the full domain. Another bias comes from my own strategy: because I reuse a model-guided pipeline every week, new queries often cluster around regions the surrogate already believes are strong. This can reinforce early beliefs and under-explore alternative zones. There is also a scale bias across functions because some objectives have very different output ranges, which can make cross-function intuition about confidence misleading if I do not normalise interpretation carefully.
+
+What is one significant limitation of your approach? Consider factors such as computational constraints, sampling biases or assumptions about function behaviour that might affect the validity or generalisability of your results.
+
+The biggest limitation is uncertainty estimation. I rely on one surrogate model and a heuristic exploration term, but I do not have a formal calibrated uncertainty estimate for each candidate. Under computational limits, this is practical, but it weakens robustness in difficult functions where train and cross validation errors diverge. That means a high predicted value can still be fragile. The approach is useful for iterative improvement, yet its generalisability is limited when the true function violates smoothness assumptions or when sparse sampling in higher dimensions leaves major regions effectively untested.
