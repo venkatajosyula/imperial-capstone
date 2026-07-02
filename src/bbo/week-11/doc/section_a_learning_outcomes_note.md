@@ -19,7 +19,7 @@ So, clustering helped with structured exploration, but it is not a guarantee of 
 
 ## 2) Model card transparency and potential bias check
 
-I reviewed the model card at `src/bbo/docs/model-cards/bbo_optimisation_strategy_model_card.md` for transparency and potential bias.
+I reviewed the model card at `docs/model-cards/bbo_optimisation_strategy_model_card.md` for transparency and potential bias.
 
 What is transparent:
 - The strategy evolution is clearly documented (heuristic -> SVM -> neural surrogate).

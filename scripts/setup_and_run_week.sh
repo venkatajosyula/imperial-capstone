@@ -2,12 +2,12 @@
 set -euo pipefail
 
 usage() {
-  echo "Usage: bash src/bbo/scripts/setup_and_run_week.sh <week-number> [--skip-install] [--python <python-cmd>] [--venv-dir <path>]"
+  echo "Usage: bash scripts/setup_and_run_week.sh <week-number> [--skip-install] [--python <python-cmd>] [--venv-dir <path>]"
   echo "Examples:"
-  echo "  bash src/bbo/scripts/setup_and_run_week.sh 13"
-  echo "  bash src/bbo/scripts/setup_and_run_week.sh 4 --skip-install"
-  echo "  bash src/bbo/scripts/setup_and_run_week.sh 7 --python python3"
-  echo "  bash src/bbo/scripts/setup_and_run_week.sh 7 --venv-dir .venv-capstone"
+  echo "  bash scripts/setup_and_run_week.sh 13"
+  echo "  bash scripts/setup_and_run_week.sh 4 --skip-install"
+  echo "  bash scripts/setup_and_run_week.sh 7 --python python3"
+  echo "  bash scripts/setup_and_run_week.sh 7 --venv-dir .venv-capstone"
 }
 
 if [[ $# -lt 1 ]]; then
@@ -67,10 +67,10 @@ if ! [[ "$week" =~ ^[0-9]+$ ]]; then
   exit 1
 fi
 
-bbo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-project_root="$(cd "$bbo_root/../.." && pwd)"
+project_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+bbo_root="$project_root/src/bbo"
 requirements_file="$project_root/requirements.txt"
-run_script="$bbo_root/scripts/run_week_pipeline.sh"
+run_script="$project_root/scripts/run_week_pipeline.sh"
 venv_path="$project_root/$venv_dir"
 venv_python="$venv_path/Scripts/python.exe"
 

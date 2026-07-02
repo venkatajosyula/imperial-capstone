@@ -11,12 +11,12 @@ This project studies how to make good decisions when the true formula is unknown
 ### Quick Navigation
 
 - Final method walkthrough notebook: `src/bbo/notebooks/bbo_final_method_and_results.ipynb`
-- Dataset datasheet: `src/bbo/docs/datasheets/bbo_capstone_dataset_datasheet.md`
-- Model card: `src/bbo/docs/model-cards/bbo_optimisation_strategy_model_card.md`
-- Presentation material: `src/bbo/docs/presentation/BBO capstone project presentation.pdf`
+- Dataset datasheet: `docs/datasheets/bbo_capstone_dataset_datasheet.md`
+- Model card: `docs/model-cards/bbo_optimisation_strategy_model_card.md`
+- Presentation material: `docs/presentation/BBO capstone project presentation.pdf`
 - Weekly round folders and source files: `src/bbo/week-1/` to `src/bbo/week-13/`
-- Weekly execution helper: `src/bbo/scripts/run_week_pipeline.sh`
-- Dependency + execution wrapper: `src/bbo/scripts/setup_and_run_week.sh`
+- Weekly execution helper: `scripts/run_week_pipeline.sh`
+- Dependency + execution wrapper: `scripts/setup_and_run_week.sh`
 
 Canonical submission files are stored at each week root using `submission_roundN.txt` (for example, `src/bbo/week-4/submission_round4.txt`).
 
@@ -303,11 +303,15 @@ Full pinned dependencies are listed in `requirements.txt`.
 ### Repository Structure (Practical View)
 
 - `src/bbo/notebooks/`: notebook-based method and result presentation
-- `src/bbo/docs/datasheets/`: final datasheet documentation
-- `src/bbo/docs/model-cards/`: final model card documentation
-- `src/bbo/docs/presentation/`: presentation materials
+- `docs/datasheets/`: final datasheet documentation
+- `docs/model-cards/`: final model card documentation
+- `docs/presentation/`: presentation materials
 - `src/bbo/week-1/` ... `src/bbo/week-13/`: weekly data, scripts, and outputs
-- `src/bbo/scripts/`: helper scripts for weekly execution
+- `scripts/`: helper scripts for weekly execution
+ - `docs/model-cards/`: final model card documentation
+ - `docs/presentation/`: presentation materials
+ - `src/bbo/week-1/` ... `src/bbo/week-13/`: weekly data, scripts, and outputs
+ - `scripts/`: helper scripts for weekly execution
 
 ### Data Hosting Note
 
@@ -318,7 +322,7 @@ The capstone data used here is lightweight and included for reproducibility. If 
 From the repository root, run a weekly pipeline with:
 
 ```bash
-bash src/bbo/scripts/run_week_pipeline.sh 13
+bash scripts/run_week_pipeline.sh 13
 ```
 
 The helper runs available week scripts in sequence (data preparation, query generation, and submission writer where present).
@@ -326,7 +330,7 @@ The helper runs available week scripts in sequence (data preparation, query gene
 If you want dependency installation and execution in one command:
 
 ```bash
-bash src/bbo/scripts/setup_and_run_week.sh 13
+bash scripts/setup_and_run_week.sh 13
 ```
 
 By default this creates/uses `.venv` and installs `requirements.txt` into that environment.
@@ -334,13 +338,13 @@ By default this creates/uses `.venv` and installs `requirements.txt` into that e
 To skip installation (for an already prepared environment):
 
 ```bash
-bash src/bbo/scripts/setup_and_run_week.sh 13 --skip-install
+bash scripts/setup_and_run_week.sh 13 --skip-install
 ```
 
 To use a different base Python or virtual environment path:
 
 ```bash
-bash src/bbo/scripts/setup_and_run_week.sh 13 --python python3 --venv-dir .venv-capstone
+bash scripts/setup_and_run_week.sh 13 --python python3 --venv-dir .venv-capstone
 ```
 
 

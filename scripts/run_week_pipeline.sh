@@ -2,13 +2,14 @@
 set -euo pipefail
 
 if [[ $# -ne 1 ]]; then
-  echo "Usage: bash src/bbo/scripts/run_week_pipeline.sh <week-number>"
-  echo "Example: bash src/bbo/scripts/run_week_pipeline.sh 13"
+  echo "Usage: bash scripts/run_week_pipeline.sh <week-number>"
+  echo "Example: bash scripts/run_week_pipeline.sh 13"
   exit 1
 fi
 
 week="$1"
-bbo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+project_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+bbo_root="$project_root/src/bbo"
 week_dir="$bbo_root/week-$week"
 scripts_dir="$week_dir/scripts"
 python_cmd="${PYTHON_CMD:-python}"
